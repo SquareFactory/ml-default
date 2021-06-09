@@ -7,6 +7,8 @@ This image comes with two flavours:
 - `single` (or `latest`) to train models on a single node
 - `parallel` which uses OpenMPI and optionally Horovod to train models on multiple nodes
 
+See the list of [available tags](https://hub.docker.com/r/csquareai/ml-default) for more information.
+
 ## Included software
 
 ### Basic programs
@@ -17,6 +19,8 @@ This image comes with two flavours:
 - [g++](https://gcc.gnu.org)
 - [vim](https://www.vim.org)
 - [wget](https://www.gnu.org/software/wget)
+
+If you need additional software, please [open an issue](https://github.com/csquare-ai/ml-default/issues/new)!
 
 ### Training frameworks/tools
 

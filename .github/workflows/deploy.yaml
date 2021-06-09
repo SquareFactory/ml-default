@@ -1,14 +1,13 @@
 name: Deploy to Docker Hub
 on:
   schedule:
-    - cron: '0 10 * * *' # everyday at 10am
+    - cron: '0 10 * * *'
   push:
     branches: [main]
     tags: ['**']
-  #    paths: [Dockerfile, .github/workflow/deploy.yaml]
+    paths-ignore: ['*.md']
   pull_request:
-    branches:
-      - 'main'
+    branches: [main]
 jobs:
   deploy:
     name: Build Docker image

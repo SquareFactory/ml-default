@@ -31,8 +31,7 @@
     "build:single": "docker build --tag=csquareai/ml-default:single --target=single .",
     "build:parallel": "docker build --tag=csquareai/ml-default:parallel --target=parallel ."
   },
-  "dependencies": {
-  },
+  "dependencies": {},
   "devDependencies": {
     "@csquare/prettier-config": "^1.1.2",
     "prettier": "^2.3.1",
