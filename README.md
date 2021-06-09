@@ -4,10 +4,10 @@ This Docker image is meant to be use as default runtime on the csquare platform.
 
 This image comes with two flavours:
 
-- `single` (or `latest`) to train models on a single node
-- `parallel` which uses OpenMPI and optionally Horovod to train models on multiple nodes
+- `csquareai/ml-default:single` (or `csquareai/ml-default:latest`) to train models on a single node
+- `csquareai/ml-default:parallel` which uses OpenMPI and optionally Horovod to train models on multiple nodes
 
-See the list of [available tags](https://hub.docker.com/r/csquareai/ml-default) for more information.
+See the list of [available tags](https://hub.docker.com/r/csquareai/ml-default/tags) for more information.
 
 ## Included software
 
