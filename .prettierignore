@@ -1,5 +1,6 @@
 /.idea
 /node_modules
 /Dockerfile
+/LICENSE
 /package-lock.json
 /.*ignore

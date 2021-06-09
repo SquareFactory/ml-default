@@ -5,7 +5,7 @@ on:
   push:
     branches: [main]
     tags: ['**']
-#    paths: [Dockerfile, .github/workflow/deploy.yaml]
+  #    paths: [Dockerfile, .github/workflow/deploy.yaml]
   pull_request:
     branches:
       - 'main'
@@ -52,5 +52,5 @@ jobs:
           target: ${{ matrix.target }}
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
-#          build-args: ${{ }}
+          #          build-args: ${{ }}
           labels: ${{ steps.meta.outputs.labels }}

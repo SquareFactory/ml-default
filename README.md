@@ -19,6 +19,7 @@ This image comes with two flavours:
 - [wget](https://www.gnu.org/software/wget)
 
 ### Training frameworks/tools
+
 See the [Dockerfile](./Dockerfile) for more details.
 
 | Software                                    | Version             |
