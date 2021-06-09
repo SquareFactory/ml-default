@@ -27,8 +27,11 @@
   "scripts": {
     "format": "prettier --write \"**\"",
     "format:check": "prettier --check \"**\"",
-    "build:base": "docker build --tag=csquareai/ml-default:base --target=base --build-arg=build_date=$(date -u +'%Y-%m-%dT%H:%M:%SZ') --build-arg=commit_hash=$(git rev-parse --short HEAD) --build-arg=version=$(jq -r .version package.json) .",
-    "build:parallel": "docker build --tag=csquareai/ml-default:parallel --target=parallel --build-arg=build_date=$(date -u +'%Y-%m-%dT%H:%M:%SZ') --build-arg=commit_hash=$(git rev-parse --short HEAD) --build-arg=version=$(jq -r .version package.json) ."
+    "build:base": "docker build --tag=csquareai/ml-default:base --target=base .",
+    "build:single": "docker build --tag=csquareai/ml-default:single --target=single .",
+    "build:parallel": "docker build --tag=csquareai/ml-default:parallel --target=parallel ."
+  },
+  "dependencies": {
   },
   "devDependencies": {
     "@csquare/prettier-config": "^1.1.2",

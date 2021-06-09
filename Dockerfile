@@ -6,16 +6,7 @@ ARG commit_hash=unknown
 ARG version=unknown
 
 # Labels, see http://label-schema.org/rc1/
-LABEL maintainer="sicong@csquare.ai"
-LABEL org.label-schema.schema-version="1.0"
-LABEL org.label-schema.build-date="$build_date"
-LABEL org.label-schema.name="ml-default:single"
-LABEL org.label-schema.description="Default Docker image used to run experiments on csquare.run"
-LABEL org.label-schema.url="https://hub.docker.com/r/csquareai/ml-default"
-LABEL org.label-schema.vcs-url="https://github.com/csquare-ai/ml-default"
-LABEL org.label-schema.vcs-ref="$commit_hash"
-LABEL org.label-schema.version="$version"
-LABEL org.label-schema.vendor="Cohesive Computing SA"
+LABEL maintainer="engineering@csquare.ai"
 
 # Python 3.7 is supported by Ubuntu Bionic out of the box
 ENV PYTHON_VERSION=3.7
@@ -66,6 +57,17 @@ RUN curl --silent https://bootstrap.pypa.io/get-pip.py -o /tmp/get-pip.py && \
 # Install common Python dependencies
 RUN pip install tqdm dvc future typing packaging h5py
 
+WORKDIR "/"
+
+
+# Single node support
+# -------------------
+# Install the most famous frameworks
+# - TensorFlow
+# - PyTorch with torchvision
+# - MXNet
+FROM base as single
+
 # Install TensorFlow and Keras
 RUN pip install tensorflow==${TENSORFLOW_VERSION} keras
 
@@ -77,12 +79,12 @@ RUN PYTAGS=$(python -c "from packaging import tags; tag = list(tags.sys_tags())[
 # Install MXNet
 RUN pip install mxnet-cu101==${MXNET_VERSION}
 
-WORKDIR "/"
-
-# Multi-node support enriched with OpenMPI and Horovod
-FROM base as parallel
-
-LABEL org.label-schema.name="ml-default:parallel"
+# Multi-node support
+# ------------------
+# Install MPI-capable librairies
+# - OpenMPI
+# - Horovod
+FROM single as parallel
 
 # Enable GLOO
 ENV HOROVOD_WITH_GLOO=1

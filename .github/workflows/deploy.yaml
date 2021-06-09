@@ -17,10 +17,12 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - target: base
+          - target: single
+            latest: true
             suffix: ''
           - target: parallel
-            suffix: parallel
+            latest: false
+            suffix: -parallel
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -37,14 +39,17 @@ jobs:
         uses: docker/metadata-action@v3
         with:
           images: csquareai/ml-default
+          flavor: |
+            latest=${{ matrix.latest }}
+            prefix=
+            suffix=${{ matrix.suffix }}
           tags: |
-            type=schedule,suffix=${{ matrix.suffix }}
-            type=ref,event=branch,suffix=${{ matrix.suffix }}
-            type=ref,event=pr,suffix=${{ matrix.suffix }}
-            type=semver,pattern={{version}},suffix=${{ matrix.suffix }}
-            type=semver,pattern={{major}}.{{minor}},suffix=${{ matrix.suffix }}
-            type=semver,pattern={{major}},suffix=${{ matrix.suffix }}
-            type=sha,suffix=${{ matrix.suffix }}
+            type=schedule
+            type=edge,branch=main
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=semver,pattern={{major}}
+            type=sha
       - name: Build and push image to DockerHub
         uses: docker/build-push-action@v2
         with:
@@ -52,5 +57,4 @@ jobs:
           target: ${{ matrix.target }}
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
-          #          build-args: ${{ }}
           labels: ${{ steps.meta.outputs.labels }}
