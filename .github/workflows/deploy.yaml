@@ -48,7 +48,7 @@ jobs:
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
             type=semver,pattern={{major}}
-            type=semver,pattern={{target}},suffix=''
+            type=semver,pattern=${{ matrix.target }},suffix=''
             type=sha
       - name: Build and push image to DockerHub
         uses: docker/build-push-action@v2
