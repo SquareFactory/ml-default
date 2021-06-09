@@ -1,0 +1,38 @@
+{
+  "name": "@csquare/ml-default",
+  "version": "1.0.0",
+  "description": "Default Docker image used to run experiments on csquare.run.",
+  "keywords": [
+    "csquare",
+    "python",
+    "machine-learning",
+    "deep-learning",
+    "tensorflow",
+    "pytorch",
+    "torchvision",
+    "cudnn",
+    "nccl",
+    "mxnet",
+    "pyspark",
+    "horovod"
+  ],
+  "homepage": "https://github.com/csquare-ai/ml-default#readme",
+  "bugs": {
+    "email": "mathieu@csquare.ai",
+    "url": "https://github.com/csquare-ai/ml-default/issues"
+  },
+  "license": "MIT",
+  "author": "Sicong Zhuang <sciong@csquare.ai> (https://www.linkedin.com/in/sicong-zhuang-27471459)",
+  "repository": "csquare-ai/ml-default",
+  "scripts": {
+    "format": "prettier --write \"**\"",
+    "format:check": "prettier --check \"**\"",
+    "build": "docker build --tag=csquareai/ml-default ."
+  },
+  "devDependencies": {
+    "@csquare/prettier-config": "^1.1.2",
+    "prettier": "^2.3.1"
+  },
+  "private": true,
+  "prettier": "@csquare/prettier-config"
+}
