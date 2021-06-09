@@ -2,8 +2,23 @@
 
 This Docker image is meant to be use as default runtime on the csquare platform.
 
+This image comes with two flavours:
+
+- `single` (or `latest`) to train models on a single node
+- `parallel` which uses OpenMPI and optionally Horovod to train models on multiple nodes
+
 ## Included software
 
+### Basic programs
+
+- [cmake](https://cmake.org)
+- [curl](https://curl.se)
+- [git](https://git-scm.com)
+- [g++](https://gcc.gnu.org)
+- [vim](https://www.vim.org)
+- [wget](https://www.gnu.org/software/wget)
+
+### Training frameworks/tools
 See the [Dockerfile](./Dockerfile) for more details.
 
 | Software                                    | Version             |

@@ -9,7 +9,7 @@ ARG version=unknown
 LABEL maintainer="sicong@csquare.ai"
 LABEL org.label-schema.schema-version="1.0"
 LABEL org.label-schema.build-date="$build_date"
-LABEL org.label-schema.name="ml-default"
+LABEL org.label-schema.name="ml-default:single"
 LABEL org.label-schema.description="Default Docker image used to run experiments on csquare.run"
 LABEL org.label-schema.url="https://hub.docker.com/r/csquareai/ml-default"
 LABEL org.label-schema.vcs-url="https://github.com/csquare-ai/ml-default"
@@ -31,50 +31,59 @@ ENV MXNET_VERSION=1.6.0.post0
 # Set default shell to /bin/bash
 SHELL ["/bin/bash", "-cu"]
 
-RUN apt-get update && apt-get install -y --allow-downgrades --allow-change-held-packages --no-install-recommends \
-        build-essential \
-        cmake \
-        g++-7 \
-        git \
-        curl \
-        vim \
-        wget \
-        ca-certificates \
-        libcudnn7=${CUDNN_VERSION} \
-        libnccl2=${NCCL_VERSION} \
-        libnccl-dev=${NCCL_VERSION} \
-        libjpeg-dev \
-        libpng-dev \
-        python${PYTHON_VERSION} \
-        python${PYTHON_VERSION}-dev \
-        python${PYTHON_VERSION}-distutils \
-        librdmacm1 \
-        libibverbs1 \
-        ibverbs-providers
+RUN apt-get update && \
+  apt-get install -y --allow-downgrades --allow-change-held-packages --no-install-recommends \
+    build-essential \
+    cmake \
+    g++-7 \
+    git \
+    curl \
+    vim \
+    wget \
+    ca-certificates \
+    libcudnn7=${CUDNN_VERSION} \
+    libnccl2=${NCCL_VERSION} \
+    libnccl-dev=${NCCL_VERSION} \
+    libjpeg-dev \
+    libpng-dev \
+    python${PYTHON_VERSION} \
+    python${PYTHON_VERSION}-dev \
+    python${PYTHON_VERSION}-distutils \
+    librdmacm1 \
+    libibverbs1 \
+    ibverbs-providers
 
 RUN ln -s /usr/bin/python${PYTHON_VERSION} /usr/bin/python
 
-RUN curl -O https://bootstrap.pypa.io/get-pip.py && \
-    python get-pip.py && \
-    rm get-pip.py
+# Install pip
+RUN curl --silent -O https://bootstrap.pypa.io/get-pip.py /tmp/get-pip.py && \
+    python /tmp/get-pip.py && \
+    rm /tmp/get-pip.py
 
 # Install TQDM DVC
 RUN pip install tqdm dvc
 
-# Install TensorFlow, Keras, PyTorch and MXNet
+# Install TensorFlow and Keras
 RUN pip install future typing packaging
-RUN pip install tensorflow==${TENSORFLOW_VERSION} \
-                keras \
-                h5py
+RUN pip install tensorflow==${TENSORFLOW_VERSION} keras h5py
 
+# Install PyTorch
 RUN PYTAGS=$(python -c "from packaging import tags; tag = list(tags.sys_tags())[0]; print(f'{tag.interpreter}-{tag.abi}')") && \
     pip install https://download.pytorch.org/whl/cu101/torch-${PYTORCH_VERSION}%2Bcu101-${PYTAGS}-linux_x86_64.whl \
         https://download.pytorch.org/whl/cu101/torchvision-${TORCHVISION_VERSION}%2Bcu101-${PYTAGS}-linux_x86_64.whl
+
+# Install MXNet
 RUN pip install mxnet-cu101==${MXNET_VERSION}
 
-# Install Spark stand-alone cluster.
-RUN wget --progress=dot:giga https://archive.apache.org/dist/spark/${SPARK_PACKAGE} -O - | tar -xzC /tmp; \
-    archive=$(basename "${SPARK_PACKAGE}") bash -c "mv -v /tmp/\${archive/%.tgz/} /spark"
+WORKDIR "/"
+
+# Multi-node support enriched with OpenMPI and Horovod
+FROM base as parallel
+
+LABEL org.label-schema.name="ml-default:parallel"
+
+# Enable GLOO
+ENV HOROVOD_WITH_GLOO=1
 
 # Install Open MPI
 RUN mkdir /tmp/openmpi && \
@@ -87,14 +96,6 @@ RUN mkdir /tmp/openmpi && \
     make install && \
     ldconfig && \
     rm -rf /tmp/openmpi
-
-WORKDIR "/"
-
-# Multi-node support enriched with OpenMPI and Horovod
-FROM base
-
-# Enable GLOO
-ENV HOROVOD_WITH_GLOO=1
 
 # Install Horovod, temporarily using CUDA stubs
 RUN ldconfig /usr/local/cuda/targets/x86_64-linux/lib/stubs && \

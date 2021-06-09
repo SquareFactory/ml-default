@@ -18,7 +18,7 @@
   ],
   "homepage": "https://github.com/csquare-ai/ml-default#readme",
   "bugs": {
-    "email": "mathieu@csquare.ai",
+    "email": "sicong@csquare.ai",
     "url": "https://github.com/csquare-ai/ml-default/issues"
   },
   "license": "MIT",
@@ -27,11 +27,13 @@
   "scripts": {
     "format": "prettier --write \"**\"",
     "format:check": "prettier --check \"**\"",
-    "build": "docker build --tag=csquareai/ml-default ."
+    "build:base": "docker build --tag=csquareai/ml-default:base --target=base --build-arg=build_date=$(date -u +'%Y-%m-%dT%H:%M:%SZ') --build-arg=commit_hash=$(git rev-parse --short HEAD) --build-arg=version=$(jq -r .version package.json) .",
+    "build:parallel": "docker build --tag=csquareai/ml-default:parallel --target=parallel --build-arg=build_date=$(date -u +'%Y-%m-%dT%H:%M:%SZ') --build-arg=commit_hash=$(git rev-parse --short HEAD) --build-arg=version=$(jq -r .version package.json) ."
   },
   "devDependencies": {
     "@csquare/prettier-config": "^1.1.2",
-    "prettier": "^2.3.1"
+    "prettier": "^2.3.1",
+    "standard-commit": "^4.2.4"
   },
   "private": true,
   "prettier": "@csquare/prettier-config"
