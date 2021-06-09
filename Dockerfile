@@ -19,13 +19,14 @@ LABEL org.label-schema.vendor="Cohesive Computing SA"
 
 # Python 3.7 is supported by Ubuntu Bionic out of the box
 ENV PYTHON_VERSION=3.7
+ENV PIP_VERSION=3
+ENV CUDNN_VERSION=7.6.5.32-1+cuda10.1
+ENV NCCL_VERSION=2.7.8-1+cuda10.1
 
 # TensorFlow version is tightly coupled to CUDA and cuDNN so it should be selected carefully
 ENV TENSORFLOW_VERSION=2.3.0
 ENV PYTORCH_VERSION=1.6.0
 ENV TORCHVISION_VERSION=0.7.0
-ENV CUDNN_VERSION=7.6.5.32-1+cuda10.1
-ENV NCCL_VERSION=2.7.8-1+cuda10.1
 ENV MXNET_VERSION=1.6.0.post0
 
 # Set default shell to /bin/bash
@@ -49,23 +50,24 @@ RUN apt-get update && \
     python${PYTHON_VERSION} \
     python${PYTHON_VERSION}-dev \
     python${PYTHON_VERSION}-distutils \
+    python${PIP_VERSION}-pip \
     librdmacm1 \
     libibverbs1 \
     ibverbs-providers
 
+# Setup the required symlinks
 RUN ln -s /usr/bin/python${PYTHON_VERSION} /usr/bin/python
 
 # Install pip
-RUN curl --silent -O https://bootstrap.pypa.io/get-pip.py /tmp/get-pip.py && \
+RUN curl --silent https://bootstrap.pypa.io/get-pip.py -o /tmp/get-pip.py && \
     python /tmp/get-pip.py && \
     rm /tmp/get-pip.py
 
-# Install TQDM DVC
-RUN pip install tqdm dvc
+# Install common Python dependencies
+RUN pip install tqdm dvc future typing packaging h5py
 
 # Install TensorFlow and Keras
-RUN pip install future typing packaging
-RUN pip install tensorflow==${TENSORFLOW_VERSION} keras h5py
+RUN pip install tensorflow==${TENSORFLOW_VERSION} keras
 
 # Install PyTorch
 RUN PYTAGS=$(python -c "from packaging import tags; tag = list(tags.sys_tags())[0]; print(f'{tag.interpreter}-{tag.abi}')") && \
