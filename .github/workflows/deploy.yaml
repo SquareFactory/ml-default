@@ -5,7 +5,7 @@ on:
   push:
     branches: [main]
     tags: ['**']
-    paths: [Dockerfile, .github/workflow/deploy.yaml]
+#    paths: [Dockerfile, .github/workflow/deploy.yaml]
   pull_request:
     branches:
       - 'main'
