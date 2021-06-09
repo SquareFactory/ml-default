@@ -45,13 +45,6 @@ jobs:
             type=semver,pattern={{major}}.{{minor}},suffix=${{ matrix.suffix }}
             type=semver,pattern={{major}},suffix=${{ matrix.suffix }}
             type=sha,suffix=${{ matrix.suffix }}
-      - name: Cache Docker layers
-        uses: actions/cache@v2
-        with:
-          path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-buildx-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-buildx-
       - name: Build and push image to DockerHub
         uses: docker/build-push-action@v2
         with:
@@ -61,12 +54,3 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
 #          build-args: ${{ }}
           labels: ${{ steps.meta.outputs.labels }}
-          cache-from: type=local,src=/tmp/.buildx-cache
-          cache-to: type=local,dest=/tmp/.buildx-cache-new
-        # Temp fix
-        # https://github.com/docker/build-push-action/issues/252
-        # https://github.com/moby/buildkit/issues/1896
-      - name: Move cache
-        run: |
-          rm -rf /tmp/.buildx-cache
-          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
