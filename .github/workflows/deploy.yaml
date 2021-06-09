@@ -1,0 +1,21 @@
+name: Deploy to Docker Hub
+on:
+  push:
+    branches: [main]
+jobs:
+  deploy:
+    name: Build Docker image
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Build
+        run: |
+          docker build --tag=csquareai/ml-default .
+      - name: Login to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: valentincsquare
+          password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
+      - name: Push on Docker Hub
+        run: docker push csquareai/ml-default
